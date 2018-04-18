@@ -1,0 +1,88 @@
+--
+-- ORACLE BD
+--
+--
+-- Base de datos: `communitydb`
+--
+
+CREATE TABLE IF NOT EXISTS Propietario (
+DNI CHAR(9) PRIMARY KEY,
+Nombre VARCHAR2(50) NOT NULL,
+Tel VARCHAR2(12) ,
+Correo VARCHAR2(50)
+CONSTRAINT propitel CHECK (upper(Tel)=lower(Tel))
+);
+
+CREATE TABLE IF NOT EXISTS Piso (
+Nº_piso VARCHAR2(9) PRIMARY KEY,
+Planta VARCHAR2(15),
+Tamaño NUMBER(5)
+);
+
+CREATE TABLE IF NOT EXISTS Derrama (
+Cod_de SERIAL PRIMARY KEY,
+Importe NUMBER(50) NOT NULL,
+Comcepto VARCHAR2(200),
+Fecha DATE
+);
+
+CREATE TABLE IF NOT EXISTS Cuota (
+Cod_cu SERIAL PRIMARY KEY,
+Importe NUMBER(50) NOT NULL,
+Año NUMBER(4),
+Periodo VARCHAR2(20),
+Fe-ini DATE,
+Fe-fin DATE
+);
+
+CREATE TABLE IF NOT EXISTS Proveedor (
+CIF CHAR(9) PRIMARY KEY,
+Tel VARCHAR2(12),
+Nom_emp VARCHAR2(100)
+CONSTRAINT provetel CHECK (upper(Tel)=lower(Tel))
+);
+
+CREATE TABLE IF NOT EXISTS Pago (
+Cod_pa SERIAL PRIMARY KEY,
+Importe NUMBER(50) NOT NULL,
+Fecha DATE,
+Comcepto VARCHAR2(200),
+CIF CHAR(9) NOT NULL,
+CONSTRAINT ClaveAjenapago FOREIGN KEY (CIF) REFERENCES
+Proveedor
+);
+
+CREATE TABLE IF NOT EXISTS Posee (
+Nº_piso VARCHAR2(9),
+DNI CHAR(9),
+Fe-ini DATE,
+Fe-fin DATE,
+CONSTRAINT ClaveAjenadni FOREIGN KEY (DNI) REFERENCES
+Propietario,
+CONSTRAINT ClaveAjenapiso FOREIGN KEY (Nº_piso) REFERENCES
+Piso
+CONSTRAINT claveprimariaposee PRIMARY KEY (Nº_piso,DNI)
+);
+
+CREATE TABLE IF NOT EXISTS Paga (
+DNI CHAR(9),
+Cod_de NUMBER,
+Fecha DATE,
+CONSTRAINT ClaveAjenadni FOREIGN KEY (DNI) REFERENCES
+Propietario,
+CONSTRAINT ClaveAjenaderrama FOREIGN KEY (Cod_de) REFERENCES
+Derrama
+CONSTRAINT claveprimariapaga PRIMARY KEY (Cod_de,DNI)
+);
+
+CREATE TABLE IF NOT EXISTS Satisface (
+DNI CHAR(9),
+Cod_cu NUMBER,
+Fecha DATE,
+CONSTRAINT ClaveAjenadni FOREIGN KEY (DNI) REFERENCES
+Propietario,
+CONSTRAINT ClaveAjenacuota FOREIGN KEY (Cod_cu) REFERENCES
+Cuota
+CONSTRAINT claveprimariasatis PRIMARY KEY (Cod_cu,DNI)
+Cuota
+);
